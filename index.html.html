@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XSR Taiwan 2025 車友名冊</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0d0d; --surface: #161616; --surface2: #1f1f1f; --surface3: #252525;
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.14);
+  --accent: #e8c84a; --accent2: #c9a82c;
+  --text: #f0ece0; --text2: #a09a88; --text3: #5a5650;
+  --red: #e05a3a; --green: #4cba80;
+}
+body { background: var(--bg); color: var(--text); font-family: 'Noto Sans TC', sans-serif; min-height: 100vh; }
+
+/* ── HEADER ── */
+header { padding: 48px 40px 32px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+header::before { content: 'XSR'; font-family: 'Bebas Neue', sans-serif; font-size: 260px; color: rgba(255,255,255,0.022); position: absolute; top: -40px; right: -20px; line-height: 1; pointer-events: none; user-select: none; }
+.header-tag { font-size: 11px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; font-weight: 500; margin-bottom: 10px; }
+header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px,6vw,72px); letter-spacing: 0.04em; line-height: 1; margin-bottom: 8px; }
+header h1 span { color: var(--accent); }
+.header-sub { font-size: 13px; color: var(--text2); letter-spacing: 0.06em; }
+.header-actions { position: absolute; top: 40px; right: 40px; display: flex; gap: 8px; }
+.hbtn { background: transparent; border: 1px solid var(--border2); color: var(--text2); font-family: 'Noto Sans TC', sans-serif; font-size: 12px; padding: 8px 14px; border-radius: 4px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; white-space: nowrap; }
+.hbtn:hover { border-color: var(--accent); color: var(--accent); }
+.hbtn.accent { border-color: rgba(232,200,74,0.4); color: var(--accent); }
+.hbtn.accent:hover { background: rgba(232,200,74,0.08); }
+
+/* ── FILTER BAR ── */
+.filter-bar { padding: 18px 40px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; position: sticky; top: 0; background: rgba(13,13,13,0.96); backdrop-filter: blur(10px); z-index: 10; }
+.fg { display: flex; align-items: center; gap: 8px; }
+.flabel { font-size: 11px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; white-space: nowrap; }
+select { background: var(--surface); border: 1px solid var(--border2); color: var(--text); font-family: 'Noto Sans TC', sans-serif; font-size: 13px; padding: 8px 32px 8px 12px; border-radius: 4px; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a09a88'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; min-width: 140px; transition: border-color 0.2s; }
+select:hover { border-color: var(--accent); }
+select:focus { outline: none; border-color: var(--accent); }
+.rbtn { background: transparent; border: 1px solid var(--border2); color: var(--text2); font-family: 'Noto Sans TC', sans-serif; font-size: 12px; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.rbtn:hover { border-color: var(--accent); color: var(--accent); }
+.cbadge { margin-left: auto; font-size: 12px; color: var(--text3); }
+.cbadge strong { color: var(--accent); font-weight: 700; }
+
+/* ── GRID ── */
+.grid-wrap { padding: 32px 40px 60px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 16px; }
+
+/* ── RIDER CARD ── */
+.rider-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: transform 0.18s, border-color 0.18s; animation: fadeIn 0.3s ease both; }
+.rider-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+.rider-card.hidden { display: none; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.photo-wrap { width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; cursor:pointer; }
+.photo-wrap img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; transition:transform 0.3s; }
+.rider-card:hover .photo-wrap img { transform:scale(1.04); }
+.av { font-family:'Bebas Neue',sans-serif; font-size:44px; color:rgba(255,255,255,0.38); user-select:none; position:relative; z-index:1; }
+.pov { position:absolute; inset:0; background:rgba(0,0,0,0.55); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; opacity:0; transition:opacity 0.2s; z-index:2; }
+.rider-card:hover .pov { opacity:1; }
+.pov-icon { font-size:20px; }
+.pov-txt { font-size:11px; letter-spacing:0.06em; color:#fff; }
+.mtag { position:absolute; bottom:8px; left:8px; font-size:9px; letter-spacing:0.1em; padding:3px 7px; border-radius:3px; font-weight:700; text-transform:uppercase; z-index:3; }
+.m91{background:rgba(232,200,74,0.16);color:var(--accent);border:1px solid rgba(232,200,74,0.28);}
+.m92{background:rgba(232,200,74,0.26);color:var(--accent);border:1px solid rgba(232,200,74,0.42);}
+.mgp{background:rgba(224,90,58,0.18);color:#e8805a;border:1px solid rgba(224,90,58,0.28);}
+.m71{background:rgba(100,180,240,0.14);color:#80c0f0;border:1px solid rgba(100,180,240,0.24);}
+.m72{background:rgba(100,180,240,0.22);color:#80c0f0;border:1px solid rgba(100,180,240,0.34);}
+.m15{background:rgba(120,220,140,0.14);color:#90e0a0;border:1px solid rgba(120,220,140,0.24);}
+.mot{background:rgba(100,100,100,0.18);color:#999;border:1px solid rgba(100,100,100,0.28);}
+.card-info { padding:10px 12px 12px; }
+.rname { font-size:13px; font-weight:500; line-height:1.3; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rloc { font-size:11px; color:var(--text3); display:flex; align-items:center; gap:4px; }
+.rloc::before { content:''; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--accent); opacity:0.4; flex-shrink:0; }
+
+/* ── MODALS (shared base) ── */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.84); z-index:100; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.22s; backdrop-filter:blur(5px); }
+.overlay.open { opacity:1; pointer-events:all; }
+.modal { background:var(--surface); border:1px solid var(--border2); border-radius:12px; width:min(480px,92vw); padding:32px; position:relative; transform:translateY(16px); transition:transform 0.22s; max-height:90vh; overflow-y:auto; }
+.overlay.open .modal { transform:translateY(0); }
+.mcls { position:absolute; top:16px; right:16px; background:transparent; border:none; color:var(--text3); font-size:18px; cursor:pointer; padding:4px 8px; border-radius:4px; }
+.mcls:hover { color:var(--text); }
+.mtitle { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:0.06em; margin-bottom:4px; }
+.msub { font-size:12px; color:var(--text3); margin-bottom:22px; }
+.mhighlight { color:var(--accent); }
+
+/* shared form elements */
+.flbl { font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:7px; display:block; }
+.finp { width:100%; background:var(--surface2); border:1px solid var(--border2); color:var(--text); font-family:'Noto Sans TC',sans-serif; font-size:13px; padding:10px 14px; border-radius:6px; transition:border-color 0.2s; margin-bottom:16px; }
+.finp:focus { outline:none; border-color:var(--accent); }
+.finp::placeholder { color:var(--text3); }
+.fsel { width:100%; background:var(--surface2); border:1px solid var(--border2); color:var(--text); font-family:'Noto Sans TC',sans-serif; font-size:13px; padding:10px 14px; border-radius:6px; cursor:pointer; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a09a88'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; margin-bottom:16px; }
+.fsel:focus { outline:none; border-color:var(--accent); }
+
+.savebtn { width:100%; background:var(--accent); border:none; color:#0d0d0d; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.1em; padding:14px; border-radius:6px; cursor:pointer; transition:background 0.2s, transform 0.1s; margin-top:4px; }
+.savebtn:hover { background:var(--accent2); }
+.savebtn:active { transform:scale(0.99); }
+.savebtn:disabled { opacity:0.35; cursor:default; transform:none; }
+.delbtn { width:100%; background:transparent; border:1px solid rgba(224,90,58,0.35); color:var(--red); font-family:'Noto Sans TC',sans-serif; font-size:13px; padding:11px; border-radius:6px; cursor:pointer; transition:all 0.2s; margin-top:10px; }
+.delbtn:hover { background:rgba(224,90,58,0.08); border-color:var(--red); }
+
+/* upload zone */
+.uzone { border:1.5px dashed var(--border2); border-radius:8px; padding:26px 20px; text-align:center; cursor:pointer; transition:all 0.2s; position:relative; margin-bottom:14px; }
+.uzone:hover,.uzone.drag-over { border-color:var(--accent); background:rgba(232,200,74,0.04); }
+.uzone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.uicon { font-size:26px; margin-bottom:5px; opacity:0.45; }
+.utxt { font-size:13px; color:var(--text2); margin-bottom:3px; }
+.uhint { font-size:11px; color:var(--text3); }
+.prevwrap { display:none; margin-bottom:14px; position:relative; border-radius:8px; overflow:hidden; }
+.prevwrap.show { display:block; }
+.prevwrap img { width:100%; max-height:190px; object-fit:cover; display:block; }
+.prevchg { position:absolute; bottom:9px; right:9px; background:rgba(0,0,0,0.7); border:1px solid var(--border2); color:var(--text); font-size:11px; padding:5px 10px; border-radius:4px; cursor:pointer; font-family:'Noto Sans TC',sans-serif; }
+.ordiv { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.orline { flex:1; height:1px; background:var(--border); }
+.orlbl { font-size:11px; color:var(--text3); letter-spacing:0.06em; }
+.drivehint { background:rgba(232,200,74,0.05); border:1px solid rgba(232,200,74,0.13); border-radius:6px; padding:11px 14px; margin-bottom:18px; font-size:12px; color:var(--text2); line-height:1.65; }
+.drivehint code { background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:3px; font-size:11px; color:var(--accent); font-family:monospace; }
+
+/* ── LOGIN MODAL ── */
+.lock-icon { font-size:36px; text-align:center; margin-bottom:16px; }
+.pw-wrap { position:relative; margin-bottom:16px; }
+.pw-wrap .finp { margin-bottom:0; padding-right:44px; }
+.pw-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text3); cursor:pointer; font-size:16px; padding:4px; }
+.pw-eye:hover { color:var(--text); }
+.login-err { font-size:12px; color:var(--red); margin-top:-10px; margin-bottom:14px; display:none; }
+.login-err.show { display:block; }
+
+/* ── ADMIN PANEL ── */
+.admin-bar { background:rgba(232,200,74,0.06); border-bottom:1px solid rgba(232,200,74,0.15); padding:10px 40px; display:none; align-items:center; gap:12px; }
+.admin-bar.open { display:flex; }
+.admin-badge { font-size:11px; letter-spacing:0.1em; color:var(--accent); text-transform:uppercase; font-weight:500; }
+.admin-sep { width:1px; height:16px; background:rgba(232,200,74,0.2); }
+.admin-note { font-size:12px; color:var(--text3); }
+.admin-logout { margin-left:auto; background:transparent; border:1px solid rgba(232,200,74,0.25); color:var(--text3); font-family:'Noto Sans TC',sans-serif; font-size:11px; padding:5px 12px; border-radius:4px; cursor:pointer; transition:all 0.2s; }
+.admin-logout:hover { border-color:var(--red); color:var(--red); }
+
+/* ── FORM ROW ── */
+.frow { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.frow .fcol { display:flex; flex-direction:column; }
+.frow .fcol .flbl { margin-bottom:7px; }
+.frow .fcol .fsel,.frow .fcol .finp { margin-bottom:0; }
+.fcol { margin-bottom:16px; }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(14px); background:var(--surface); border:1px solid var(--border2); color:var(--text); font-size:13px; padding:11px 20px; border-radius:8px; z-index:300; opacity:0; transition:all 0.25s; pointer-events:none; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.ok { border-color:rgba(76,186,128,0.45); }
+.toast.err { border-color:rgba(224,90,58,0.45); }
+
+/* ── DIVIDER ── */
+.section-div { border:none; border-top:1px solid var(--border); margin:0 0 20px; }
+
+.no-results { grid-column:1/-1; text-align:center; padding:80px 0; color:var(--text3); font-size:14px; }
+footer { border-top:1px solid var(--border); padding:18px 40px; font-size:11px; color:var(--text3); letter-spacing:0.05em; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+
+@media(max-width:600px){
+  header { padding:32px 20px 24px; }
+  .header-actions { top:24px; right:16px; flex-direction:column; gap:6px; }
+  .filter-bar,.grid-wrap,footer,.admin-bar { padding-left:20px; padding-right:20px; }
+  .cbadge { margin-left:0; width:100%; }
+  .frow { grid-template-columns:1fr; }
+}
+.import-row { display:flex; align-items:center; gap:10px; background:var(--surface2); border-radius:6px; padding:8px 10px; }
+.import-thumb { width:40px; height:40px; border-radius:4px; object-fit:cover; flex-shrink:0; background:var(--surface3); }
+.import-thumb-ph { width:40px; height:40px; border-radius:4px; flex-shrink:0; background:var(--surface3); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.import-info { flex:1; min-width:0; }
+.import-name { font-size:12px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.import-match { font-size:11px; color:var(--text3); margin-top:2px; }
+.import-match.ok { color:var(--green); }
+.import-match.no { color:var(--red); }
+.import-status { font-size:11px; min-width:48px; text-align:right; color:var(--text3); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Taiwan · 2025</div>
+  <h1>XSR <span>車友</span> 名冊</h1>
+  <div class="header-sub">Rider Directory — Filter by Region &amp; Model</div>
+  <div class="header-actions">
+    <button class="hbtn" onclick="openPhotoModal(null)">📷 更新照片</button>
+    <button class="hbtn accent" id="adminToggleBtn" onclick="onAdminBtnClick()">🔒 管理員</button>
+  </div>
+</header>
+
+<!-- Admin bar (shown when logged in) -->
+<div class="admin-bar" id="adminBar">
+  <span class="admin-badge">⚡ 管理員模式</span>
+  <div class="admin-sep"></div>
+  <span class="admin-note">可新增、編輯或刪除車友資料</span>
+  <button class="hbtn" style="border-color:rgba(232,200,74,0.3);color:var(--accent);font-size:11px;padding:5px 12px" onclick="openFolderImport()">📂 批次匯入照片</button>
+  <button class="admin-logout" onclick="doLogout()">登出</button>
+</div>
+
+<!-- ══ FOLDER IMPORT MODAL ══ -->
+<div class="overlay" id="folderOverlay" onclick="if(event.target===this)closeOverlay('folderOverlay')">
+  <div class="modal" style="max-width:520px">
+    <button class="mcls" onclick="closeOverlay('folderOverlay')">✕</button>
+    <div class="mtitle">📂 批次匯入照片</div>
+    <div class="msub" style="margin-bottom:20px">選擇整個照片資料夾，系統依檔名前綴自動對應車友</div>
+
+    <div style="background:rgba(232,200,74,0.06);border:1px solid rgba(232,200,74,0.15);border-radius:6px;padding:12px 14px;margin-bottom:18px;font-size:12px;color:var(--text2);line-height:1.7">
+      📌 <strong>命名規則：</strong>檔名開頭為車友編號，例如<br>
+      <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:monospace">02-小安.JPG</code> &nbsp;→&nbsp; 對應編號 <strong style="color:var(--accent)">2</strong> 號車友（小安）<br>
+      數字後接 <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:monospace">-</code> 或 <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;color:var(--accent);font-family:monospace">_</code> 皆可辨識
+    </div>
+
+    <div class="uzone" id="folderZone" style="margin-bottom:20px">
+      <input type="file" id="folderInput" accept="image/*" multiple onchange="onFolderSelect(event)">
+      <div class="uicon">📁</div>
+      <div class="utxt" id="folderZoneTxt">點擊選擇照片（可多選），或拖放整個資料夾</div>
+      <div class="uhint">支援 JPG / PNG / WEBP</div>
+    </div>
+
+    <div id="importPreview" style="display:none;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:12px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase">比對結果</span>
+        <span id="importMatchCount" style="font-size:12px;color:var(--accent)"></span>
+      </div>
+      <div id="importList" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
+    </div>
+
+    <button class="savebtn" id="importSaveBtn" style="display:none" onclick="doFolderImport()">上傳並儲存所有照片</button>
+    <div id="importProgress" style="display:none;margin-top:12px">
+      <div style="height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:8px">
+        <div id="importProgressBar" style="height:100%;background:var(--accent);width:0%;transition:width 0.3s"></div>
+      </div>
+      <div id="importProgressTxt" style="font-size:12px;color:var(--text3);text-align:center"></div>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="fg">
+    <span class="flabel">地區</span>
+    <select id="fl"><option value="">全部地區</option></select>
+  </div>
+  <div class="fg">
+    <span class="flabel">車款</span>
+    <select id="fm"><option value="">全部車款</option></select>
+  </div>
+  <button class="rbtn" onclick="resetFilters()">✕ 清除</button>
+  <div class="cbadge">顯示 <strong id="shown">0</strong> / <span id="total">0</span> 位車友</div>
+</div>
+
+<div class="grid-wrap"><div class="grid" id="grid"></div></div>
+
+<footer>
+  <span>XSR Taiwan 2025 — 點擊照片可更新</span>
+  <span id="fstats"></span>
+</footer>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="overlay" id="loginOverlay" onclick="if(event.target===this)closeOverlay('loginOverlay')">
+  <div class="modal" style="max-width:360px">
+    <button class="mcls" onclick="closeOverlay('loginOverlay')">✕</button>
+    <div class="lock-icon">🔐</div>
+    <div class="mtitle" style="text-align:center">管理員登入</div>
+    <div class="msub" style="text-align:center;margin-bottom:24px">請輸入管理員密碼以繼續</div>
+    <label class="flbl">密碼</label>
+    <div class="pw-wrap">
+      <input class="finp" type="password" id="pwInput" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="pw-eye" onclick="togglePw()" id="pwEye">👁</button>
+    </div>
+    <div class="login-err" id="loginErr">密碼錯誤，請再試一次</div>
+    <button class="savebtn" onclick="doLogin()">登入</button>
+  </div>
+</div>
+
+<!-- ══ ADD / EDIT RIDER MODAL ══ -->
+<div class="overlay" id="riderOverlay" onclick="if(event.target===this)closeOverlay('riderOverlay')">
+  <div class="modal">
+    <button class="mcls" onclick="closeOverlay('riderOverlay')">✕</button>
+    <div class="mtitle" id="rformTitle">新增車友</div>
+    <div class="msub" id="rformSub">填寫以下資料後儲存</div>
+
+    <label class="flbl">姓名 / 暱稱 *</label>
+    <input class="finp" id="f_name" type="text" placeholder="例：Ken香草">
+
+    <div class="frow">
+      <div class="fcol">
+        <label class="flbl">地區 *</label>
+        <select class="fsel" id="f_loc">
+          <option value="">— 請選擇 —</option>
+          <option>臺北市</option><option>新北市</option><option>桃園市</option>
+          <option>新竹市</option><option>新竹縣</option><option>苗栗縣</option>
+          <option>臺中市</option><option>彰化縣</option><option>南投縣</option>
+          <option>雲林縣</option><option>嘉義市</option><option>嘉義縣</option>
+          <option>臺南市</option><option>高雄市</option><option>屏東縣</option>
+          <option>宜蘭縣</option><option>花蓮縣</option><option>臺東縣</option>
+          <option>澎湖縣</option><option>金門縣</option><option>連江縣</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="fcol">
+        <label class="flbl">車款 *</label>
+        <select class="fsel" id="f_mdl">
+          <option value="">— 請選擇 —</option>
+          <option>XSR900 一代</option><option>XSR900 二代</option><option>XSR900 GP</option>
+          <option>XSR700 一代</option><option>XSR700 二代</option>
+          <option>XSR155</option><option>其他</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="section-div">
+
+    <div class="msub" style="margin-bottom:14px">照片（選填）— 可在儲存後再更新</div>
+
+    <div class="uzone" id="rf_uzone">
+      <input type="file" id="rf_file" accept="image/*" onchange="onRfFile(event)">
+      <div class="uicon">📁</div>
+      <div class="utxt">點擊選擇或拖放照片</div>
+      <div class="uhint">JPG / PNG / WEBP · 最大 2MB</div>
+    </div>
+    <div class="prevwrap" id="rf_prev">
+      <img id="rf_previmg" src="" alt="">
+      <button class="prevchg" onclick="clearRfPreview()">重新選擇</button>
+    </div>
+    <div class="ordiv"><div class="orline"></div><div class="orlbl">或</div><div class="orline"></div></div>
+    <label class="flbl">圖片網址 / Google Drive 連結</label>
+    <input class="finp" id="rf_url" type="text" placeholder="https://drive.google.com/file/d/..." oninput="onRfUrl(event)">
+
+    <button class="savebtn" id="rformSaveBtn" onclick="saveRider()">儲存車友</button>
+    <button class="delbtn" id="rformDelBtn" style="display:none" onclick="deleteRider()">刪除此車友</button>
+  </div>
+</div>
+
+<!-- ══ PHOTO UPLOAD MODAL ══ -->
+<div class="overlay" id="photoOverlay" onclick="if(event.target===this)closeOverlay('photoOverlay')">
+  <div class="modal">
+    <button class="mcls" onclick="closeOverlay('photoOverlay')">✕</button>
+    <div class="mtitle">更新照片</div>
+    <div class="msub">為 <span class="mhighlight" id="pmname">—</span> 上傳照片</div>
+
+    <div id="pRselWrap" style="display:none;margin-bottom:16px">
+      <label class="flbl">選擇車友</label>
+      <select class="fsel" id="pRsel" onchange="onPRsel(this.value)" style="margin-bottom:0"></select>
+    </div>
+
+    <div class="uzone" id="p_uzone">
+      <input type="file" id="p_file" accept="image/*" onchange="onPFile(event)">
+      <div class="uicon">📁</div>
+      <div class="utxt">點擊選擇或拖放照片</div>
+      <div class="uhint">JPG / PNG / WEBP · 最大 2MB</div>
+    </div>
+    <div class="prevwrap" id="p_prev">
+      <img id="p_previmg" src="" alt="">
+      <button class="prevchg" onclick="clearPPreview()">重新選擇</button>
+    </div>
+    <div class="ordiv"><div class="orline"></div><div class="orlbl">或貼上網址</div><div class="orline"></div></div>
+    <label class="flbl">圖片網址 / Google Drive 連結</label>
+    <input class="finp" id="p_url" type="text" placeholder="https://drive.google.com/file/d/..." oninput="onPUrl(event)">
+    <div class="drivehint">
+      💡 <strong>上傳照片：</strong>選擇檔案後會自動上傳至圖床，完成後存入連結。
+      或直接貼上 Google Drive 連結 — 系統自動將 <code>/file/d/FILE_ID/view</code> 轉為縮圖網址。
+    </div>
+    <button class="savebtn" id="p_savebtn" onclick="savePhoto()" disabled>儲存照片</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// CONFIG  — change the password here
+// ══════════════════════════════════════════════════════════════════════════════
+const ADMIN_PASSWORD = 'xsr2025';
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SEED DATA (hardcoded baseline — new riders added via admin are stored/merged)
+// ══════════════════════════════════════════════════════════════════════════════
+const SEED = [
+  {id:1,name:"林志杰",loc:"臺中市",mdl:"其他"},
+  {id:2,name:"小安",loc:"臺北市",mdl:"XSR900 一代"},
+  {id:3,name:"U-HANG",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:4,name:"Kim",loc:"臺北市",mdl:"XSR700 二代"},
+  {id:5,name:"蘇湘雯",loc:"新北市",mdl:"XSR700 二代"},
+  {id:6,name:"Ya卜",loc:"苗栗縣",mdl:"XSR900 一代"},
+  {id:7,name:"嘉沄",loc:"臺南市",mdl:"XSR700 一代"},
+  {id:9,name:"Jin LIU",loc:"臺中市",mdl:"XSR900 二代"},
+  {id:10,name:"吳尚霖",loc:"臺北市",mdl:"XSR900 一代"},
+  {id:11,name:"徐振洋",loc:"桃園市",mdl:"其他"},
+  {id:12,name:"俊宇",loc:"屏東縣",mdl:"XSR900 一代"},
+  {id:13,name:"珮芸",loc:"臺中市",mdl:"XSR700 一代"},
+  {id:14,name:"楊遠宸",loc:"臺北市",mdl:"XSR700 二代"},
+  {id:16,name:"永良Adi",loc:"臺北市",mdl:"XSR900 GP"},
+  {id:17,name:"彭",loc:"新竹市",mdl:"XSR900 二代"},
+  {id:18,name:"育挺",loc:"臺南市",mdl:"XSR900 一代"},
+  {id:19,name:"KevinChiu凱",loc:"新竹縣",mdl:"其他"},
+  {id:20,name:"HeyRayRay",loc:"新北市",mdl:"XSR900 二代"},
+  {id:21,name:"大頭",loc:"臺中市",mdl:"XSR900 二代"},
+  {id:22,name:"駿諺",loc:"新北市",mdl:"XSR900 二代"},
+  {id:23,name:"凃龍刀",loc:"彰化縣",mdl:"XSR900 一代"},
+  {id:24,name:"敏臻",loc:"桃園市",mdl:"XSR900 一代"},
+  {id:25,name:"Ken香草",loc:"臺北市",mdl:"XSR900 一代"},
+  {id:26,name:"テツイ（阿偉）",loc:"臺中市",mdl:"XSR900 一代"},
+  {id:27,name:"Yin尹",loc:"臺中市",mdl:"XSR700 一代"},
+  {id:28,name:"周亭璋",loc:"臺中市",mdl:"XSR900 GP"},
+  {id:29,name:"佑宇",loc:"臺北市",mdl:"XSR700 一代"},
+  {id:30,name:"暉恩",loc:"臺北市",mdl:"XSR900 二代"},
+  {id:31,name:"Rain/小雨",loc:"臺北市",mdl:"XSR900 一代"},
+  {id:32,name:"陳小明",loc:"苗栗縣",mdl:"XSR900 一代"},
+  {id:33,name:"LONGWiND長風",loc:"臺北市",mdl:"XSR900 一代"},
+  {id:34,name:"Chin小金",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:35,name:"AlanTse",loc:"屏東縣",mdl:"XSR900 二代"},
+  {id:36,name:"江",loc:"臺中市",mdl:"XSR900 GP"},
+  {id:37,name:"小梁牧師",loc:"花蓮縣",mdl:"其他"},
+  {id:38,name:"趙本弘",loc:"臺中市",mdl:"XSR900 GP"},
+  {id:39,name:"黃崇銘",loc:"高雄市",mdl:"其他"},
+  {id:40,name:"信任JustinLin",loc:"新北市",mdl:"XSR900 二代"},
+  {id:41,name:"E.P.Chen",loc:"新北市",mdl:"XSR900 二代"},
+  {id:42,name:"Horst.L",loc:"臺北市",mdl:"XSR700 二代"},
+  {id:43,name:"Tim",loc:"新北市",mdl:"XSR900 二代"},
+  {id:44,name:"Kenny毅",loc:"彰化縣",mdl:"XSR900 一代"},
+  {id:45,name:"steven",loc:"桃園市",mdl:"XSR900 一代"},
+  {id:46,name:"Bluek",loc:"臺北市",mdl:"XSR900 GP"},
+  {id:48,name:"阿平",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:49,name:"lemon",loc:"新北市",mdl:"XSR900 二代"},
+  {id:50,name:"軒宇",loc:"新北市",mdl:"XSR700 一代"},
+  {id:51,name:"PontingYeh曉倩",loc:"臺北市",mdl:"XSR900 一代"},
+  {id:52,name:"JosephTree",loc:"臺北市",mdl:"XSR700 二代"},
+  {id:53,name:"James",loc:"臺中市",mdl:"XSR900 一代"},
+  {id:54,name:"田",loc:"臺南市",mdl:"其他"},
+  {id:55,name:"宇",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:56,name:"阿哲這樣",loc:"臺北市",mdl:"XSR900 二代"},
+  {id:57,name:"deadkevin",loc:"臺北市",mdl:"XSR700 一代"},
+  {id:58,name:"狄狄",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:59,name:"Hemsley",loc:"臺中市",mdl:"XSR900 一代"},
+  {id:60,name:"郭叡岡",loc:"臺南市",mdl:"XSR900 二代"},
+  {id:61,name:"諺昌/Augus",loc:"臺中市",mdl:"XSR900 二代"},
+  {id:62,name:"侑",loc:"臺中市",mdl:"XSR900 二代"},
+  {id:63,name:"陳柏凱",loc:"桃園市",mdl:"XSR900 二代"},
+  {id:64,name:"YuTong",loc:"桃園市",mdl:"XSR900 一代"},
+  {id:65,name:"彥霖",loc:"新北市",mdl:"XSR700 一代"},
+  {id:66,name:"哲豪",loc:"桃園市",mdl:"XSR900 一代"},
+  {id:67,name:"EthanShih",loc:"臺中市",mdl:"XSR900 二代"},
+  {id:68,name:"ㄚ福!",loc:"臺中市",mdl:"XSR900 二代"},
+  {id:70,name:"林岳陞",loc:"嘉義縣",mdl:"XSR900 二代"},
+  {id:71,name:"詩敦",loc:"臺中市",mdl:"XSR900 GP"},
+  {id:72,name:"Justin",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:73,name:"彥廷",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:74,name:"蔡嘉仁",loc:"彰化縣",mdl:"XSR900 一代"},
+  {id:75,name:"Enoch",loc:"新北市",mdl:"XSR900 GP"},
+  {id:76,name:"偉展",loc:"彰化縣",mdl:"XSR900 二代"},
+  {id:78,name:"ShuanJheng軒",loc:"花蓮縣",mdl:"XSR900 一代"},
+  {id:79,name:"NathanLim",loc:"臺北市",mdl:"XSR900 GP"},
+  {id:80,name:"李大胖",loc:"臺北市",mdl:"XSR900 二代"},
+  {id:81,name:"俊泰、福勝小信",loc:"高雄市",mdl:"XSR900 一代"},
+  {id:82,name:"Bill銘",loc:"新北市",mdl:"XSR700 二代"},
+  {id:83,name:"Thomas(阿迪)",loc:"桃園市",mdl:"XSR700 二代"},
+  {id:84,name:"Jeffrey傅",loc:"新北市",mdl:"XSR900 一代"},
+  {id:85,name:"蘇",loc:"新北市",mdl:"XSR900 一代"},
+  {id:87,name:"黃冠澤",loc:"桃園市",mdl:"XSR900 一代"},
+  {id:88,name:"吳朝翔-Bear",loc:"嘉義縣",mdl:"XSR900 一代"},
+  {id:89,name:"RaymondW",loc:"臺北市",mdl:"其他"},
+  {id:90,name:"世斌",loc:"新北市",mdl:"XSR900 一代"},
+  {id:91,name:"PaulChang",loc:"臺北市",mdl:"XSR900 二代"},
+  {id:92,name:"Fire阿賢",loc:"彰化縣",mdl:"XSR900 一代"},
+  {id:93,name:"游邵鈞",loc:"臺北市",mdl:"XSR700 二代"},
+  {id:94,name:"哲宇",loc:"臺中市",mdl:"XSR900 二代"},
+];
+
+const MS = {
+  "XSR900 一代":{cls:"m91",bg:"#241e0a",tag:"900 一代"},
+  "XSR900 二代":{cls:"m92",bg:"#2a2108",tag:"900 二代"},
+  "XSR900 GP"  :{cls:"mgp",bg:"#261510",tag:"900 GP"},
+  "XSR700 一代":{cls:"m71",bg:"#0e1a26",tag:"700 一代"},
+  "XSR700 二代":{cls:"m72",bg:"#0c1828",tag:"700 二代"},
+  "XSR155"     :{cls:"m15",bg:"#0e2012",tag:"155"},
+  "其他"       :{cls:"mot",bg:"#1a1a1a",tag:"其他"},
+};
+const MOD_ORDER=["XSR900 一代","XSR900 二代","XSR900 GP","XSR700 一代","XSR700 二代","XSR155","其他"];
+
+// ══ STATE ══════════════════════════════════════════════════════════════════════
+let riders = [...SEED];  // merged live list
+let photos = {};
+let isAdmin = false;
+// photo modal
+let pActiveId = null, pDataUrl = null, pUrlVal = '';
+// rider form
+let rfEditId = null, rfDataUrl = null, rfUrlVal = '';
+
+// ══ STORAGE (localStorage) ════════════════════════════════════════════════════
+// Uses localStorage so data persists across page reloads in any browser.
+function safeList(prefix){
+  const keys = [];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k && k.startsWith(prefix)) keys.push(k);
+  }
+  return keys;
+}
+function safeGet(key){
+  try{ return localStorage.getItem(key); }catch(e){ return null; }
+}
+function safeSet(key,val){
+  try{ localStorage.setItem(key,val); return true; }catch(e){
+    console.error('safeSet failed:', key, e);
+    return false;
+  }
+}
+function safeDel(key){
+  try{ localStorage.removeItem(key); return true; }catch(e){ return false; }
+}
+
+function loadAll() {
+  // load photos
+  const photoKeys = safeList('photo-');
+  for(const k of photoKeys){
+    const v = safeGet(k);
+    if(v) photos[parseInt(k.slice(6))] = v;
+  }
+  // load added/edited riders
+  const riderKeys = safeList('rider-');
+  for(const k of riderKeys){
+    const v = safeGet(k);
+    if(v){ try{
+      const rd=JSON.parse(v);
+      const idx=riders.findIndex(x=>x.id===rd.id);
+      if(idx>=0) riders[idx]=rd; else riders.push(rd);
+    }catch(e){} }
+  }
+  // apply deletions
+  const delKeys = safeList('del-');
+  for(const k of delKeys){
+    const v = safeGet(k);
+    if(v) riders=riders.filter(x=>x.id!==parseInt(v));
+  }
+  riders.sort((a,b)=>a.id-b.id);
+  buildAll();
+}
+
+function storeRider(r){ return safeSet('rider-'+r.id, JSON.stringify(r)); }
+function storeDelete(id){ const ok=safeSet('del-'+id, String(id)); safeDel('rider-'+id); return ok; }
+function storePhoto(id,url){ return safeSet('photo-'+id, url); }
+
+function nextId(){ return riders.length ? Math.max(...riders.map(r=>r.id))+1 : 1; }
+
+// ══ HELPERS ════════════════════════════════════════════════════════════════════
+function initials(name){
+  const c=name.replace(/[^\u4e00-\u9fa5a-zA-Z]/g,'');
+  if(!c) return '#';
+  if(/[\u4e00-\u9fa5]/.test(c)) return c[0];
+  const p=name.split(/[\s\-_\/]/);
+  return p.length>=2&&p[1]?(p[0][0]+p[1][0]).toUpperCase():c.slice(0,2).toUpperCase();
+}
+function driveToThumb(url){
+  let m=url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if(m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
+  m=url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if(m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
+  return url;
+}
+function toast(msg,type='ok'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast show '+type;
+  setTimeout(()=>el.className='toast',2800);
+}
+function closeOverlay(id){ document.getElementById(id).classList.remove('open'); }
+function openOverlay(id){ document.getElementById(id).classList.add('open'); }
+
+// ══ BUILD GRID ══════════════════════════════════════════════════════════════════
+function buildAll(){
+  buildFilters();
+  buildPhotoRiderSelect();
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
+  riders.forEach((r,i)=>{
+    const ms=MS[r.mdl]||MS['其他'];
+    const url=photos[r.id];
+    const card=document.createElement('div');
+    card.className='rider-card'; card.dataset.loc=r.loc; card.dataset.mdl=r.mdl; card.dataset.rid=r.id;
+    card.style.animationDelay=Math.min(i*12,360)+'ms';
+    card.innerHTML=`
+      <div class="photo-wrap" style="background:${ms.bg}" onclick="onCardPhotoClick(${r.id})">
+        ${url?`<img src="${url}" alt="${r.name}" onerror="this.remove()">`:`<div class="av">${initials(r.name)}</div>`}
+        <div class="mtag ${ms.cls}">${ms.tag}</div>
+        <div class="pov"><div class="pov-icon">📷</div><div class="pov-txt">${url?'更換照片':'上傳照片'}</div></div>
+      </div>
+      <div class="card-info">
+        <div class="rname">${r.name}${isAdmin?` <span style="font-size:10px;color:var(--text3);cursor:pointer" onclick="event.stopPropagation();openEditRider(${r.id})">✏️</span>`:''}</div>
+        <div class="rloc">${r.loc}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  applyFilter();
+  updateFooter();
+}
+
+function buildFilters(){
+  const fl=document.getElementById('fl'), fm=document.getElementById('fm');
+  const curLoc=fl.value, curMdl=fm.value;
+  fl.innerHTML='<option value="">全部地區</option>';
+  fm.innerHTML='<option value="">全部車款</option>';
+  [...new Set(riders.map(r=>r.loc))].sort((a,b)=>a.localeCompare(b,'zh'))
+    .forEach(l=>{ const o=document.createElement('option');o.value=l;o.textContent=l;fl.appendChild(o); });
+  MOD_ORDER.filter(m=>riders.some(r=>r.mdl===m))
+    .forEach(m=>{ const o=document.createElement('option');o.value=m;o.textContent=m;fm.appendChild(o); });
+  fl.value=curLoc; fm.value=curMdl;
+  document.getElementById('total').textContent=riders.length;
+}
+
+function buildPhotoRiderSelect(){
+  const sel=document.getElementById('pRsel');
+  sel.innerHTML='<option value="">— 請選擇 —</option>';
+  riders.forEach(r=>{ const o=document.createElement('option');o.value=r.id;o.textContent=`${r.name}（${r.loc}）`;sel.appendChild(o); });
+}
+
+function updateFooter(){
+  const bm={};
+  riders.forEach(r=>{ bm[r.mdl]=(bm[r.mdl]||0)+1; });
+  document.getElementById('fstats').textContent=MOD_ORDER.filter(m=>bm[m]).map(m=>`${m}: ${bm[m]}`).join(' · ');
+}
+
+// ══ FILTER ══════════════════════════════════════════════════════════════════════
+function applyFilter(){
+  const loc=document.getElementById('fl').value, mdl=document.getElementById('fm').value;
+  let n=0;
+  document.querySelectorAll('.rider-card').forEach(c=>{
+    const ok=(!loc||c.dataset.loc===loc)&&(!mdl||c.dataset.mdl===mdl);
+    c.classList.toggle('hidden',!ok); if(ok)n++;
+  });
+  document.getElementById('shown').textContent=n;
+  let nr=document.querySelector('.no-results');
+  if(n===0){ if(!nr){nr=document.createElement('div');nr.className='no-results';nr.textContent='此條件無符合車友';document.getElementById('grid').appendChild(nr);} }
+  else if(nr) nr.remove();
+}
+function resetFilters(){ document.getElementById('fl').value='';document.getElementById('fm').value='';applyFilter(); }
+
+// ══ ADMIN AUTH ══════════════════════════════════════════════════════════════════
+function onAdminBtnClick(){
+  if(isAdmin){ openAddRider(); }
+  else{ openOverlay('loginOverlay'); }
+}
+function togglePw(){
+  const inp=document.getElementById('pwInput');
+  inp.type=inp.type==='password'?'text':'password';
+}
+function doLogin(){
+  const pw=document.getElementById('pwInput').value;
+  if(pw===ADMIN_PASSWORD){
+    isAdmin=true;
+    closeOverlay('loginOverlay');
+    document.getElementById('pwInput').value='';
+    document.getElementById('loginErr').classList.remove('show');
+    document.getElementById('adminBar').classList.add('open');
+    document.getElementById('adminToggleBtn').textContent='➕ 新增車友';
+    document.getElementById('adminToggleBtn').style.borderColor='rgba(232,200,74,0.5)';
+    buildAll();
+    toast('✓ 已登入管理員模式');
+  } else {
+    document.getElementById('loginErr').classList.add('show');
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwInput').focus();
+  }
+}
+function doLogout(){
+  isAdmin=false;
+  document.getElementById('adminBar').classList.remove('open');
+  document.getElementById('adminToggleBtn').textContent='🔒 管理員';
+  document.getElementById('adminToggleBtn').style.borderColor='';
+  buildAll();
+  toast('已登出');
+}
+
+// ══ ADD / EDIT RIDER ══════════════════════════════════════════════════════════
+function openAddRider(){
+  rfEditId=null; rfDataUrl=null; rfUrlVal='';
+  document.getElementById('rformTitle').textContent='新增車友';
+  document.getElementById('rformSub').textContent='填寫以下資料後儲存';
+  document.getElementById('f_name').value='';
+  document.getElementById('f_loc').value='';
+  document.getElementById('f_mdl').value='';
+  document.getElementById('rf_url').value='';
+  document.getElementById('rf_file').value='';
+  document.getElementById('rf_prev').classList.remove('show');
+  document.getElementById('rf_uzone').style.display='';
+  document.getElementById('rformDelBtn').style.display='none';
+  openOverlay('riderOverlay');
+}
+function openEditRider(id){
+  if(!isAdmin) return;
+  const r=riders.find(x=>x.id===id); if(!r) return;
+  rfEditId=id; rfDataUrl=null; rfUrlVal='';
+  document.getElementById('rformTitle').textContent='編輯車友';
+  document.getElementById('rformSub').textContent=r.name;
+  document.getElementById('f_name').value=r.name;
+  document.getElementById('f_loc').value=r.loc;
+  document.getElementById('f_mdl').value=r.mdl;
+  document.getElementById('rf_url').value='';
+  document.getElementById('rf_file').value='';
+  document.getElementById('rf_prev').classList.remove('show');
+  document.getElementById('rf_uzone').style.display='';
+  document.getElementById('rformDelBtn').style.display='block';
+  openOverlay('riderOverlay');
+}
+async function saveRider(){
+  const name=document.getElementById('f_name').value.trim();
+  const loc=document.getElementById('f_loc').value;
+  const mdl=document.getElementById('f_mdl').value;
+  if(!name||!loc||!mdl){ toast('請填寫所有必填欄位','err'); return; }
+  const btn=document.getElementById('rformSaveBtn');
+  btn.disabled=true; btn.textContent='儲存中…';
+  const id = rfEditId || nextId();
+  const r={id,name,loc,mdl};
+  const ok=storeRider(r);
+  if(!ok){ toast('儲存失敗','err'); btn.disabled=false; btn.textContent='儲存車友'; return; }
+  // handle photo
+  const photoUrl = rfDataUrl||(rfUrlVal?driveToThumb(rfUrlVal):null);
+  if(photoUrl){
+    storePhoto(id, photoUrl);
+    photos[id]=photoUrl;
+  }
+  const idx=riders.findIndex(x=>x.id===id);
+  if(idx>=0) riders[idx]=r; else riders.push(r);
+  riders.sort((a,b)=>a.id-b.id);
+  closeOverlay('riderOverlay');
+  buildAll();
+  toast(rfEditId?'✓ 車友資料已更新':'✓ 新車友已新增');
+  btn.disabled=false; btn.textContent='儲存車友';
+}
+async function deleteRider(){
+  if(!rfEditId) return;
+  const r=riders.find(x=>x.id===rfEditId);
+  if(!confirm(`確定刪除「${r?.name}」嗎？`)) return;
+  const ok=storeDelete(rfEditId);
+  if(!ok){ toast('刪除失敗','err'); return; }
+  riders=riders.filter(x=>x.id!==rfEditId);
+  delete photos[rfEditId];
+  closeOverlay('riderOverlay');
+  buildAll();
+  toast('車友已刪除');
+}
+
+// rider form file/url
+async function onRfFile(e){
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>10*1024*1024){ toast('檔案過大，請選 10MB 以下的圖片','err'); return; }
+  showRfUploading(true);
+  const url = await uploadToImgur(f);
+  showRfUploading(false);
+  if(!url){ toast('上傳失敗，請改用圖片網址','err'); return; }
+  rfDataUrl=null; rfUrlVal=url;
+  document.getElementById('rf_url').value=url;
+  showRfPreview(url);
+}
+function showRfUploading(on){
+  const z=document.getElementById('rf_uzone');
+  z.querySelector('.utxt').textContent = on ? '上傳中…請稍候' : '點擊選擇或拖放照片';
+  z.style.opacity = on ? '0.5' : '1';
+  z.style.pointerEvents = on ? 'none' : '';
+}
+function onRfUrl(e){
+  rfUrlVal=e.target.value.trim(); rfDataUrl=null;
+  if(rfUrlVal) showRfPreview(driveToThumb(rfUrlVal));
+  else document.getElementById('rf_prev').classList.remove('show');
+}
+function showRfPreview(url){ document.getElementById('rf_previmg').src=url; document.getElementById('rf_prev').classList.add('show'); document.getElementById('rf_uzone').style.display='none'; }
+function clearRfPreview(){ rfDataUrl=null; rfUrlVal=''; document.getElementById('rf_prev').classList.remove('show'); document.getElementById('rf_uzone').style.display=''; document.getElementById('rf_file').value=''; document.getElementById('rf_url').value=''; }
+
+// ══ PHOTO MODAL ══════════════════════════════════════════════════════════════
+function onCardPhotoClick(id){ openPhotoModal(id); }
+function openPhotoModal(rid){
+  pActiveId=rid; pDataUrl=null; pUrlVal='';
+  document.getElementById('p_url').value='';
+  document.getElementById('p_file').value='';
+  document.getElementById('p_prev').classList.remove('show');
+  document.getElementById('p_uzone').style.display='';
+  document.getElementById('p_savebtn').disabled=true;
+  if(rid){
+    const r=riders.find(x=>x.id===rid);
+    document.getElementById('pmname').textContent=r?r.name:rid;
+    document.getElementById('pRselWrap').style.display='none';
+  } else {
+    document.getElementById('pmname').textContent='選擇車友';
+    document.getElementById('pRselWrap').style.display='block';
+    document.getElementById('pRsel').value='';
+  }
+  openOverlay('photoOverlay');
+}
+function onPRsel(val){ pActiveId=val?parseInt(val):null; if(pActiveId){ const r=riders.find(x=>x.id===pActiveId); document.getElementById('pmname').textContent=r?r.name:pActiveId; } checkPReady(); }
+function onPFile(e){
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>10*1024*1024){ toast('檔案過大','err'); return; }
+  showPUploading(true);
+  uploadToImgur(f).then(url=>{
+    showPUploading(false);
+    if(!url){ toast('上傳失敗，請改用圖片網址','err'); return; }
+    pDataUrl=null; pUrlVal=url;
+    document.getElementById('p_url').value=url;
+    showPPreview(url); checkPReady();
+  });
+}
+function showPUploading(on){
+  const z=document.getElementById('p_uzone');
+  z.querySelector('.utxt').textContent = on ? '上傳中…請稍候' : '點擊選擇或拖放照片';
+  z.style.opacity = on ? '0.5' : '1';
+  z.style.pointerEvents = on ? 'none' : '';
+}
+function onPUrl(e){ pUrlVal=e.target.value.trim(); pDataUrl=null; if(pUrlVal) showPPreview(driveToThumb(pUrlVal)); else document.getElementById('p_prev').classList.remove('show'); checkPReady(); }
+function showPPreview(url){ document.getElementById('p_previmg').src=url; document.getElementById('p_prev').classList.add('show'); document.getElementById('p_uzone').style.display='none'; }
+function clearPPreview(){ pDataUrl=null; pUrlVal=''; document.getElementById('p_prev').classList.remove('show'); document.getElementById('p_uzone').style.display=''; document.getElementById('p_file').value=''; document.getElementById('p_url').value=''; document.getElementById('p_savebtn').disabled=true; }
+function checkPReady(){ document.getElementById('p_savebtn').disabled=!(pActiveId&&(pDataUrl||pUrlVal.length>5)); }
+async function savePhoto(){
+  if(!pActiveId) return;
+  const btn=document.getElementById('p_savebtn');
+  btn.disabled=true; btn.textContent='儲存中…';
+  const url=pDataUrl||driveToThumb(pUrlVal);
+  const ok=storePhoto(pActiveId,url);
+  if(ok){ photos[pActiveId]=url; patchCard(pActiveId); closeOverlay('photoOverlay'); toast('✓ 照片已更新'); }
+  else toast('儲存失敗','err');
+  btn.disabled=false; btn.textContent='儲存照片';
+}
+function patchCard(rid){
+  const card=document.querySelector(`.rider-card[data-rid="${rid}"]`); if(!card) return;
+  const pw=card.querySelector('.photo-wrap');
+  pw.querySelectorAll('img,.av').forEach(el=>el.remove());
+  const url=photos[rid];
+  if(url){ const img=document.createElement('img');img.src=url;img.alt='';img.onerror=()=>img.remove();pw.insertBefore(img,pw.firstChild); }
+  else { const av=document.createElement('div');av.className='av';av.textContent=initials(riders.find(r=>r.id===rid)?.name||'');pw.insertBefore(av,pw.firstChild); }
+  const pt=pw.querySelector('.pov-txt'); if(pt) pt.textContent=url?'更換照片':'上傳照片';
+}
+
+// ══ IMGUR UPLOAD ═════════════════════════════════════════════════════════════
+async function uploadToImgur(file){
+  try {
+    const fd = new FormData();
+    fd.append('image', file);
+    const res = await fetch('https://api.imgur.com/3/image', {
+      method: 'POST',
+      headers: { Authorization: 'Client-ID 546c25a59c58ad7' },
+      body: fd
+    });
+    const json = await res.json();
+    if(json.success) return json.data.link;
+    return null;
+  } catch(e) { return null; }
+}
+
+// drag & drop for both upload zones
+['rf_uzone','p_uzone'].forEach(zid=>{
+  const z=document.getElementById(zid);
+  const inputId=zid==='rf_uzone'?'rf_file':'p_file';
+  const handler=zid==='rf_uzone'?onRfFile:onPFile;
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('drag-over');});
+  z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))handler({target:{files:[f]}});});
+});
+
+// ══ FOLDER IMPORT ════════════════════════════════════════════════════════════
+let folderFiles = []; // [{file, riderId, riderName, matched}]
+
+function openFolderImport(){
+  folderFiles = [];
+  document.getElementById('importPreview').style.display = 'none';
+  document.getElementById('importSaveBtn').style.display = 'none';
+  document.getElementById('importProgress').style.display = 'none';
+  document.getElementById('folderZoneTxt').textContent = '點擊選擇照片（可多選），或拖放整個資料夾';
+  document.getElementById('folderInput').value = '';
+  openOverlay('folderOverlay');
+}
+
+function onFolderSelect(e){
+  const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+  if(!files.length) return;
+  processFolderFiles(files);
+}
+
+function processFolderFiles(files){
+  folderFiles = files.map(file => {
+    // match leading digits: "02-小安.JPG" → id=2, "9_abc.png" → id=9
+    const m = file.name.match(/^(\d+)[-_]/);
+    const riderId = m ? parseInt(m[1]) : null;
+    const rider = riderId ? riders.find(r => r.id === riderId) : null;
+    return { file, riderId, riderName: rider ? rider.name : null, matched: !!rider };
+  });
+
+  const matched = folderFiles.filter(f => f.matched).length;
+  const total = folderFiles.length;
+
+  document.getElementById('folderZoneTxt').textContent = `已選擇 ${total} 張照片`;
+  document.getElementById('importMatchCount').textContent = `✓ ${matched} 筆對應成功 / ${total - matched} 筆未對應`;
+  document.getElementById('importMatchCount').style.color = matched > 0 ? 'var(--accent)' : 'var(--red)';
+
+  // render preview list
+  const list = document.getElementById('importList');
+  list.innerHTML = '';
+  folderFiles.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'import-row';
+    // thumbnail
+    const thumb = document.createElement('img');
+    thumb.className = 'import-thumb';
+    thumb.src = URL.createObjectURL(item.file);
+    row.appendChild(thumb);
+    // info
+    const info = document.createElement('div');
+    info.className = 'import-info';
+    info.innerHTML = `<div class="import-name">${item.file.name}</div>
+      <div class="import-match ${item.matched ? 'ok' : 'no'}">
+        ${item.matched ? `→ #${item.riderId} ${item.riderName}` : '⚠ 找不到對應車友'}
+      </div>`;
+    row.appendChild(info);
+    const status = document.createElement('div');
+    status.className = 'import-status';
+    status.id = `imp-status-${item.riderId || item.file.name}`;
+    status.textContent = item.matched ? '待上傳' : '略過';
+    row.appendChild(status);
+    list.appendChild(row);
+  });
+
+  document.getElementById('importPreview').style.display = 'block';
+  if(matched > 0) document.getElementById('importSaveBtn').style.display = 'block';
+}
+
+async function doFolderImport(){
+  const toUpload = folderFiles.filter(f => f.matched);
+  if(!toUpload.length) return;
+
+  document.getElementById('importSaveBtn').style.display = 'none';
+  document.getElementById('importProgress').style.display = 'block';
+
+  let done = 0, succeeded = 0;
+  for(const item of toUpload){
+    const statusEl = document.getElementById(`imp-status-${item.riderId}`);
+    if(statusEl) statusEl.textContent = '上傳中…';
+
+    // convert file to base64 data URL for storage (photos folder = direct file, no external host needed)
+    const dataUrl = await new Promise(res => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result);
+      reader.readAsDataURL(item.file);
+    });
+
+    const ok = safeSet('photo-' + item.riderId, dataUrl);
+    if(ok){
+      photos[item.riderId] = dataUrl;
+      patchCard(item.riderId);
+      succeeded++;
+      if(statusEl) { statusEl.textContent = '✓ 完成'; statusEl.style.color = 'var(--green)'; }
+    } else {
+      if(statusEl) { statusEl.textContent = '✗ 失敗'; statusEl.style.color = 'var(--red)'; }
+    }
+
+    done++;
+    const pct = Math.round((done / toUpload.length) * 100);
+    document.getElementById('importProgressBar').style.width = pct + '%';
+    document.getElementById('importProgressTxt').textContent = `${done} / ${toUpload.length} 完成`;
+  }
+
+  document.getElementById('importProgressTxt').textContent = `✓ 完成！成功匯入 ${succeeded} 張照片`;
+  toast(`✓ 成功匯入 ${succeeded} 張照片`);
+}
+
+// drag & drop for folder zone
+const fz = document.getElementById('folderZone');
+fz.addEventListener('dragover', e => { e.preventDefault(); fz.classList.add('drag-over'); });
+fz.addEventListener('dragleave', () => fz.classList.remove('drag-over'));
+fz.addEventListener('drop', e => {
+  e.preventDefault(); fz.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if(files.length) processFolderFiles(files);
+});
+
+// ══ INIT ══════════════════════════════════════════════════════════════════════
+document.getElementById('fl').addEventListener('change',applyFilter);
+document.getElementById('fm').addEventListener('change',applyFilter);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ ['loginOverlay','riderOverlay','photoOverlay'].forEach(closeOverlay); } });
+document.getElementById('pwInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+loadAll();
+</script>
+</body>
+</html>
