@@ -225,7 +225,12 @@ const SEED=[{id:2,name:"小安",loc:"臺北市",mdl:"XSR900 一代"},{id:3,name:
 
 // ── JSONBIN API ────────────────────────────────────────────────────────────────
 let photos = {};
-  
+async function loadPhotos() {
+  try {
+    const res = await fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': BIN_KEY } });
+    const data = await res.json();
+    photos = data.record?.photos || {};
+  } catch(e) { console.error('loadPhotos failed', e); }  
 async function saveBin() {
   try {
     const seedIds = new Set(SEED.map(r => r.id));
