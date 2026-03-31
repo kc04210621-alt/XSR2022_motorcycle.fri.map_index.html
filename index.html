@@ -225,22 +225,7 @@ const SEED=[{id:2,name:"小安",loc:"臺北市",mdl:"XSR900 一代"},{id:3,name:
 
 // ── JSONBIN API ────────────────────────────────────────────────────────────────
 let photos = {};
-async function loadPhotos() {
-  try {
-    const res = await fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': BIN_KEY } });
-    const data = await res.json();
-    const record = data.record || {};
-    photos = record.photos || {};
-    // Apply saved edits/additions/deletions to rider list
-    const extra = record.extraRiders || [];
-    const deleted = record.deletedIds || [];
-    extra.forEach(r => {
-      const i = riders.findIndex(x => x.id === r.id);
-      if (i >= 0) riders[i] = r; else riders.push(r);
-    });
-    riders = riders.filter(r => !deleted.includes(r.id));
-    riders.sort((a, b) => a.id - b.id);
-  } catch(e) { console.error('loadPhotos failed', e); }
+  
 async function saveBin() {
   try {
     const seedIds = new Set(SEED.map(r => r.id));
