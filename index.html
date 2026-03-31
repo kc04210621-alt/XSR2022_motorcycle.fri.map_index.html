@@ -226,20 +226,19 @@ const SEED=[{id:2,name:"小安",loc:"臺北市",mdl:"XSR900 一代"},{id:3,name:
 // ── JSONBIN API ────────────────────────────────────────────────────────────────
 let photos = {};
 
-async function loadPhotos() {
+async function saveBin() {
   try {
-    const res = await fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': BIN_KEY } });
-    const data = await res.json();
-    photos = data.record?.photos || {};
-  } catch(e) { console.error('loadPhotos failed', e); }
-}
-
-async function savePhotos() {
-  try {
+    const seedIds = new Set(SEED.map(r => r.id));
+    const extraRiders = riders.filter(r => {
+      if (!seedIds.has(r.id)) return true; // new rider
+      const orig = SEED.find(x => x.id === r.id);
+      return orig.name !== r.name || orig.loc !== r.loc || orig.mdl !== r.mdl; // edited
+    });
+    const deletedIds = SEED.map(r => r.id).filter(id => !riders.find(r => r.id === id));
     const res = await fetch(BIN_URL, {
       method: 'PUT',
       headers: HEADERS,
-      body: JSON.stringify({ photos })
+      body: JSON.stringify({ photos, extraRiders, deletedIds })
     });
     return res.ok;
   } catch(e) { return false; }
@@ -340,7 +339,7 @@ async function savePhoto(){
   const val = pFileData ? pFileData : driveToImg(pUrlVal);
   if(pFileData && pFileData.length > 3800000){toast('檔案過大，請改用 Google Drive 連結','err');btn.disabled=false;btn.textContent='儲存照片';return;}
   photos[String(pActiveId)] = val;
-  const ok = await savePhotos();
+  const ok = await saveBin();
   if(ok){patchCard(pActiveId);closeOv('ovPhoto');toast('✓ 照片已儲存');}
   else{delete photos[String(pActiveId)];toast('儲存失敗，請再試一次','err');}
   btn.disabled=false; btn.textContent='儲存照片';
@@ -359,20 +358,29 @@ function patchCard(rid){
 // ── ADD / EDIT RIDER ───────────────────────────────────────────────────────────
 function openAddRider(){rfEditId=null;document.getElementById('rfTit').textContent='新增車友';document.getElementById('rfSub').textContent='填寫資料後儲存';document.getElementById('fName').value='';document.getElementById('fLoc').value='';document.getElementById('fMdl').value='';document.getElementById('rfDelBtn').style.display='none';openOv('ovRider');}
 function openEdit(id){if(!isAdmin)return;const r=riders.find(x=>x.id===id);if(!r)return;rfEditId=id;document.getElementById('rfTit').textContent='編輯車友';document.getElementById('rfSub').textContent=r.name;document.getElementById('fName').value=r.name;document.getElementById('fLoc').value=r.loc;document.getElementById('fMdl').value=r.mdl;document.getElementById('rfDelBtn').style.display='block';openOv('ovRider');}
-function saveRider(){
+async function saveRider(){
   const name=document.getElementById('fName').value.trim(),loc=document.getElementById('fLoc').value,mdl=document.getElementById('fMdl').value;
   if(!name||!loc||!mdl){toast('請填寫所有必填欄位','err');return;}
+  const btn=document.getElementById('rfSaveBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span>儲存中…';
   const id=rfEditId||(riders.length?Math.max(...riders.map(r=>r.id))+1:1);
   const r={id,name,loc,mdl};
   const i=riders.findIndex(x=>x.id===id);if(i>=0)riders[i]=r;else riders.push(r);
   riders.sort((a,b)=>a.id-b.id);
-  closeOv('ovRider');build();toast(rfEditId?'✓ 資料已更新':'✓ 新車友已新增');
+  const ok=await saveBin();
+  if(ok){closeOv('ovRider');build();toast(rfEditId?'✓ 資料已更新':'✓ 新車友已新增');}
+  else{toast('儲存失敗，請再試一次','err');}
+  btn.disabled=false; btn.textContent='儲存車友';
 }
-function deleteRider(){
+}
+async function deleteRider(){
   if(!rfEditId)return;const r=riders.find(x=>x.id===rfEditId);
   if(!confirm(`確定刪除「${r?.name}」？`))return;
-  riders=riders.filter(x=>x.id!==rfEditId);delete photos[String(rfEditId)];
-  closeOv('ovRider');build();toast('車友已刪除');
+  riders=riders.filter(x=>x.id!==rfEditId);
+  delete photos[String(rfEditId)];
+  const ok=await saveBin();
+  if(ok){closeOv('ovRider');build();toast('車友已刪除');}
+  else toast('刪除失敗','err');
 }
 
 // ── EVENTS ─────────────────────────────────────────────────────────────────────
