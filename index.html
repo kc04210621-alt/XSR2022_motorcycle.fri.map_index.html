@@ -241,7 +241,6 @@ async function loadPhotos() {
     riders = riders.filter(r => !deleted.includes(r.id));
     riders.sort((a, b) => a.id - b.id);
   } catch(e) { console.error('loadPhotos failed', e); }
-  
 async function saveBin() {
   try {
     const seedIds = new Set(SEED.map(r => r.id));
